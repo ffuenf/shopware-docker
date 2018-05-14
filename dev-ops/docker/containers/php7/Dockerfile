@@ -29,7 +29,7 @@ RUN apt-get update -qq && apt-get install -y -qq \
         nodejs npm nodejs-legacy \
         ant
 
-RUN docker-php-ext-install iconv mcrypt mbstring \
+RUN docker-php-ext-install iconv mcrypt mbstring opcache \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install gd \
     && docker-php-ext-install zip \
@@ -47,6 +47,9 @@ RUN mkdir /tmp/ioncube && \
     cp /tmp/ioncube/ioncube/ioncube_loader_lin_7.1.so /usr/local/ioncube/ioncube_loader_lin_7.1.so && \
     echo zend_extension=/usr/local/ioncube/ioncube_loader_lin_7.1.so > /usr/local/etc/php/conf.d/00-ioncube.ini && \
     rm -rf /tmp/ioncube/
+
+RUN pecl install apcu
+RUN echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini
 
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
